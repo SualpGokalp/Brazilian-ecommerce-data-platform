@@ -1,0 +1,28 @@
+# Ortam değişkenleri (şifreler git'e gitmesin)
+.env
+
+# İndirilen CSV verileri (büyük dosyalar, repoya konmaz)
+data/*
+!data/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# dbt
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+
+# Loglar
+logs/*
+!logs/.gitkeep
+
+# Editör / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,17 @@
+services:
+  postgres:
+    # "postgres" adında bir servis tanımlıyoruz
+    image: postgres:16 # Docker Hub'dan hazır PostgreSQL 16 imajını çek
+    container_name: ecommerce_db # Container'a okunabilir bir isim ver
+    environment:
+      # Veritabanı ayarları (kullanıcı, şifre, db adı)
+      POSTGRES_USER: dbt_user
+      POSTGRES_PASSWORD: dbt_password
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5432:5432" # Bilgisayarının 5432 portunu container'a bağla
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Veriyi kalıcı yap (container silinse bile durur)
+
+volumes:
+  postgres_data: # Yukarıda kullanılan kalıcı depolama alanını tanımla
