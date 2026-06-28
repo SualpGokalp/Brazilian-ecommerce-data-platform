@@ -34,7 +34,8 @@ docker compose ps
 ## Yol Haritası
 
 - [x] Proje iskeleti ve docker-compose (PostgreSQL)
-- [ ] `data/` — Kaggle'dan CSV'leri indir
-- [ ] `ingestion/` — CSV → PostgreSQL (Bronze katman)
-- [ ] `dbt/` — Silver + Gold modelleri
+- [x] `data/` — Kaggle'dan CSV'leri indir
+- [x] `ingestion/` — CSV → PostgreSQL (Bronze katman)
+- [x] `dbt/` — Silver staging modelleri (`stg_*`)
+- [ ] `dbt/` — Gold modelleri (iş metrikleri) + testler
 - [ ] `api/` — FastAPI ile Gold metrik endpoint'leri
