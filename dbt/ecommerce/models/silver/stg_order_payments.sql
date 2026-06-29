@@ -1,6 +1,6 @@
 with source as (
 
-    select * from bronze.order_payments
+    select * from {{ source('bronze', 'order_payments') }}
 
 ),
 
