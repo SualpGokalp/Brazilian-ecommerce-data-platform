@@ -40,4 +40,6 @@ docker compose ps
 - [x] `dbt/` — Gold modelleri (`fct_orders`, `dim_customers`, `dim_products`)
 - [x] `dbt/` — Veri kalitesi testleri (unique / not_null)
 - [ ] `dbt/` — Ek metrikler + doküman
+- [x] `airflow/` — Orkestrasyon iskeleti (docker-compose + ilk DAG)
+- [ ] `airflow/` — dbt pipeline'ını çalıştıran DAG
 - [ ] `api/` — FastAPI ile Gold metrik endpoint'leri
