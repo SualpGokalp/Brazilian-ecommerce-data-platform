@@ -37,6 +37,7 @@ docker compose ps
 - [x] `data/` — Kaggle'dan CSV'leri indir
 - [x] `ingestion/` — CSV → PostgreSQL (Bronze katman)
 - [x] `dbt/` — Silver staging modelleri (`stg_*`) + source tanımları
-- [x] `dbt/` — Gold modeli (`fct_orders` — sipariş bazlı metrikler)
-- [ ] `dbt/` — Ek Gold modelleri + testler
+- [x] `dbt/` — Gold modelleri (`fct_orders`, `dim_customers`, `dim_products`)
+- [x] `dbt/` — Veri kalitesi testleri (unique / not_null)
+- [ ] `dbt/` — Ek metrikler + doküman
 - [ ] `api/` — FastAPI ile Gold metrik endpoint'leri

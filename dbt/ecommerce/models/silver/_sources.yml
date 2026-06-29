@@ -10,3 +10,4 @@ sources:
       - name: customers
       - name: products
       - name: order_payments
+      - name: category_translation
