@@ -14,6 +14,43 @@ services:
       - postgres_data:/var/lib/postgresql/data # Veriyi kalıcı yap (container silinse bile durur)
     networks:
       - ecommerce_network # Airflow container'larının da bağlanacağı paylaşılan ağ
+    healthcheck: # api servisi "db hazır" olana kadar beklesin diye
+      test: ["CMD-SHELL", "pg_isready -U dbt_user -d ecommerce"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    # FastAPI — Gold katmanı metriklerini REST olarak sunar
+    build: ./api
+    container_name: ecommerce_api
+    environment:
+      # Container içinden PostgreSQL'e servis/container adıyla ulaşılır (localhost DEĞİL)
+      POSTGRES_USER: dbt_user
+      POSTGRES_PASSWORD: dbt_password
+      POSTGRES_HOST: ecommerce_db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ecommerce
+    ports:
+      - "8000:8000" # http://localhost:8000/docs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - ecommerce_network
+
+  dashboard:
+    # Streamlit + Plotly — API'yi tüketen arayüz
+    build: ./dashboard
+    container_name: ecommerce_dashboard
+    environment:
+      API_URL: http://api:8000 # dashboard, API'ye container ağı üzerinden ulaşır
+    ports:
+      - "8501:8501" # http://localhost:8501
+    depends_on:
+      - api
+    networks:
+      - ecommerce_network
 
 volumes:
   postgres_data: # Yukarıda kullanılan kalıcı depolama alanını tanımla

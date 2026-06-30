@@ -151,27 +151,27 @@ cd Brazilian-ecommerce-data-platform
 # 1. Create your .env (DB credentials)  — see the example below
 cp .env.example .env   # then edit if needed
 
-# 2. Start the PostgreSQL warehouse
-docker compose up -d
+# 2. Bring up the whole serving stack with ONE command
+#    (PostgreSQL + FastAPI + Streamlit dashboard)
+docker compose up -d --build
+#    -> API   : http://localhost:8000/docs
+#    -> Dash  : http://localhost:8501
 
-# 3. Install Python deps & download the dataset
+# 3. Install Python deps & download the dataset (for the pipeline)
 python -m pip install -r requirements.txt
 python ingestion/download_data.py
 
-# 4. (Option A) Run the pipeline manually
-python ingestion/load_to_bronze.py            # raw -> bronze
-cd dbt/ecommerce && dbt run && dbt test        # bronze -> silver -> gold
+# 4. Load the data — (Option A) manually
+python ingestion/load_to_bronze.py             # raw -> bronze
+cd dbt/ecommerce && dbt run && dbt test         # bronze -> silver -> gold
 
-# 4. (Option B) Run it orchestrated with Airflow
-cd airflow && docker compose up -d             # open http://localhost:8080
+# 4. Load the data — (Option B) orchestrated with Airflow
+cd airflow && docker compose up -d              # open http://localhost:8080
 #   then trigger the `dbt_pipeline` DAG
-
-# 5. Serve the API
-uvicorn api.main:app --reload                  # http://localhost:8000/docs
-
-# 6. Launch the dashboard
-streamlit run dashboard/app.py                 # http://localhost:8501
 ```
+
+> Once the data is loaded, refresh the dashboard at **http://localhost:8501**.
+> The API and dashboard run as containers; the warehouse persists in a Docker volume.
 
 **`.env` example**
 
@@ -214,7 +214,7 @@ Example — a live `GET /monthly-orders` response in the Swagger UI:
 - [x] Streamlit + Plotly dashboard
 - [x] CI (GitHub Actions: ruff lint + dbt validate on a throwaway Postgres)
 - [ ] Incremental models & snapshots (SCD2)
-- [ ] Containerize the API + dashboard into the compose stack
+- [x] Containerize the API + dashboard into the compose stack (`docker compose up`)
 - [ ] Publish dbt docs (lineage) to GitHub Pages
 
 ## 📚 Dataset & License

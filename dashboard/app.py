@@ -1,9 +1,12 @@
+import os
+
 import pandas as pd
 import plotly.express as px
 import requests
 import streamlit as st
 
-API_URL = "http://localhost:8000"
+# Container'da compose 'http://api:8000' verir; lokalde varsayılan localhost.
+API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 st.set_page_config(page_title="E-Commerce Analytics", layout="wide")
 st.title("📊 Olist E-Commerce Analytics Dashboard")
