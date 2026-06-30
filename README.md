@@ -198,6 +198,10 @@ Base URL: `http://localhost:8000` · interactive docs at `/docs`
 | `GET` | `/order-value-distribution` | Orders bucketed by price range |
 | `GET` | `/top-cities?limit=` | Cities with the most orders |
 
+Example — a live `GET /monthly-orders` response in the Swagger UI:
+
+![API live response](assets/screenshots/monthly-order.png)
+
 ## 🗺️ Roadmap
 
 - [x] PostgreSQL warehouse + Docker Compose
