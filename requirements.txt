@@ -1,3 +1,26 @@
-# Projenin Python bağımlılıkları
-# Kurmak için:  .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+# =============================================================
+# Python dependencies for the Brazilian E-Commerce Data Platform
+# Install:  python -m pip install -r requirements.txt
+# =============================================================
+
+# --- Ingestion (data/ -> PostgreSQL bronze) ---
 kagglehub[pandas-datasets]
+pandas
+sqlalchemy
+psycopg2-binary
+python-dotenv
+
+# --- API (FastAPI serving the gold layer) ---
+fastapi
+uvicorn[standard]
+
+# --- Dashboard (Streamlit + Plotly) ---
+streamlit
+plotly
+requests
+
+# --- Transformation (dbt) ---
+# Note: in the Airflow image dbt runs in an isolated venv
+# (see airflow/Dockerfile) to avoid dependency clashes. Listed
+# here for running dbt locally.
+dbt-postgres==1.10.2

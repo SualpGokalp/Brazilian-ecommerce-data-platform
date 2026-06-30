@@ -1,0 +1,10 @@
+# Normalize line endings: keep LF in the repo, let Git handle the
+# working-copy conversion. Stops the "LF will be replaced by CRLF" noise.
+* text=auto eol=lf
+
+# Binary assets — never touch
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.csv binary
