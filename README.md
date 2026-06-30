@@ -5,6 +5,7 @@
 **An end-to-end, containerized data platform on the Olist Brazilian e-commerce dataset —
 from raw CSVs to a governed warehouse, an analytics API, and an interactive dashboard.**
 
+[![CI](https://github.com/SualpGokalp/Brazilian-ecommerce-data-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/SualpGokalp/Brazilian-ecommerce-data-platform/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![dbt](https://img.shields.io/badge/dbt-1.10-FF694B?logo=dbt&logoColor=white)](https://www.getdbt.com/)
 [![Airflow](https://img.shields.io/badge/Apache%20Airflow-3.0-017CEE?logo=apacheairflow&logoColor=white)](https://airflow.apache.org/)
@@ -211,7 +212,7 @@ Example — a live `GET /monthly-orders` response in the Swagger UI:
 - [x] Airflow end-to-end DAG (ingestion → run → test → docs)
 - [x] FastAPI analytics API (9 endpoints)
 - [x] Streamlit + Plotly dashboard
-- [ ] CI (sqlfluff + ruff + `dbt build` on a throwaway Postgres)
+- [x] CI (GitHub Actions: ruff lint + dbt validate on a throwaway Postgres)
 - [ ] Incremental models & snapshots (SCD2)
 - [ ] Containerize the API + dashboard into the compose stack
 - [ ] Publish dbt docs (lineage) to GitHub Pages

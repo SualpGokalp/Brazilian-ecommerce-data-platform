@@ -1,0 +1,11 @@
+# Tooling config for the project.
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# dbt build artifacts & local envs
+extend-exclude = [".venv", "dbt/**/target", "airflow/logs", "airflow/config"]
+
+[tool.ruff.lint]
+# E/W: pycodestyle, F: pyflakes, I: isort import sorting
+select = ["E", "F", "I", "W"]

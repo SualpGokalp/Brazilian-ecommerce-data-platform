@@ -1,6 +1,8 @@
-from airflow import DAG
-from airflow.operators.bash import BashOperator
 from datetime import datetime, timedelta
+
+from airflow.operators.bash import BashOperator
+
+from airflow import DAG
 
 # --- Yollar (hepsi container içi) ---
 # dbt projesi volume ile /opt/airflow/dbt'ye bağlandı.

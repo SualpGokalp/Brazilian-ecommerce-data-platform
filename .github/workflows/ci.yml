@@ -1,0 +1,84 @@
+name: CI
+
+# Run on every push and PR to main.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # --- 1) Lint the Python code (API, ingestion, dashboard, Airflow DAGs) ---
+  lint-python:
+    name: Lint Python (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ruff
+        run: pip install ruff
+      - name: ruff check
+        run: ruff check api ingestion dashboard airflow
+
+  # --- 2) Validate the dbt project against a throwaway PostgreSQL ---
+  validate-dbt:
+    name: Validate dbt project
+    runs-on: ubuntu-latest
+
+    # Ephemeral Postgres so dbt can connect (no real data needed to validate).
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dbt_user
+          POSTGRES_PASSWORD: dbt_password
+          POSTGRES_DB: ecommerce
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: dbt/ecommerce
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dbt-postgres
+        run: pip install dbt-postgres==1.10.2
+
+      - name: Write CI dbt profile
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<'EOF'
+          ecommerce:
+            target: ci
+            outputs:
+              ci:
+                type: postgres
+                host: localhost
+                port: 5432
+                user: dbt_user
+                password: dbt_password
+                dbname: ecommerce
+                schema: public
+                threads: 4
+          EOF
+
+      - name: dbt deps
+        run: dbt deps
+
+      - name: dbt debug (connection check)
+        run: dbt debug
+
+      - name: dbt parse (project validity)
+        run: dbt parse

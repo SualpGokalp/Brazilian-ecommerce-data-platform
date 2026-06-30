@@ -1,7 +1,8 @@
 import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from sqlalchemy import create_engine, text
-from dotenv import load_dotenv
 
 # .env'den bağlantı bilgilerini oku
 load_dotenv()

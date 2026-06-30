@@ -1,6 +1,7 @@
-import kagglehub
-import shutil
 import os
+import shutil
+
+import kagglehub
 
 print("Veri indiriliyor...")
 path = kagglehub.dataset_download("olistbr/brazilian-ecommerce")

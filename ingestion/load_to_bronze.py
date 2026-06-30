@@ -1,7 +1,8 @@
 import os
+
 import pandas as pd
-from sqlalchemy import create_engine, text, inspect
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, inspect, text
 
 # 1. .env dosyasındaki bağlantı bilgilerini yükle
 load_dotenv()
