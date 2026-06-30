@@ -75,6 +75,14 @@ x-airflow-common:
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
     # dbt, profiles.yml dosyasını bu klasörde arar (container içine volume ile bağlandı)
     DBT_PROFILES_DIR: '/opt/airflow/dbt_profiles'
+    # ingestion/load_to_bronze.py bu env değişkenlerini os.getenv ile okur.
+    # Container içinden ana PostgreSQL'e host=ecommerce_db ile ulaşılır (localhost DEĞİL).
+    # Script lokalde kök .env'deki localhost ile, container'da bu değerlerle çalışır.
+    POSTGRES_USER: dbt_user
+    POSTGRES_PASSWORD: dbt_password
+    POSTGRES_HOST: ecommerce_db
+    POSTGRES_PORT: '5432'
+    POSTGRES_DB: ecommerce
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
@@ -84,6 +92,10 @@ x-airflow-common:
     - ../dbt/ecommerce:/opt/airflow/dbt
     # dbt'nin bağlantı bilgilerini içeren profiles.yml klasörünü bağla
     - ./dbt_profiles:/opt/airflow/dbt_profiles
+    # Ingestion script'i ve ham CSV verisi (load_to_bronze.py bunları kullanır).
+    # Script __file__'a göre ../data baktığı için yan yana mount ediliyor.
+    - ../ingestion:/opt/airflow/ingestion
+    - ../data:/opt/airflow/data
   user: "${AIRFLOW_UID:-50000}:0"
   networks:
     # Airflow'un kendi iç ağı (redis + airflow metadata postgres)

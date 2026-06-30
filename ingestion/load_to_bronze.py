@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, inspect
 from dotenv import load_dotenv
 
 # 1. .env dosyasındaki bağlantı bilgilerini yükle
@@ -42,11 +42,22 @@ for csv_file, table_name in csv_to_table.items():
     print(f"Yükleniyor: {csv_file} -> bronze.{table_name}")
 
     df = pd.read_csv(csv_path)
+
+    # Tablo zaten varsa DROP (if_exists="replace") kullanmıyoruz: üstüne kurulu
+    # dbt silver view'ları DROP'u engeller (DependentObjectsStillExist).
+    # Bunun yerine TRUNCATE + append yapıyoruz; TRUNCATE view'ları etkilemez.
+    if inspect(engine).has_table(table_name, schema="bronze"):
+        with engine.begin() as conn:
+            conn.execute(text(f'TRUNCATE TABLE bronze."{table_name}"'))
+        if_exists = "append"
+    else:
+        if_exists = "replace"   # ilk yüklemede tabloyu oluştur
+
     df.to_sql(
         table_name,
         engine,
         schema="bronze",
-        if_exists="replace",   # tablo varsa baştan oluştur
+        if_exists=if_exists,
         index=False,           # pandas'ın satır numarasını ekleme
         chunksize=10000,       # büyük dosyaları parça parça yaz (bellek dostu)
     )

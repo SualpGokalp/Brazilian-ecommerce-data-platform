@@ -16,4 +16,13 @@ RUN python -m venv /opt/dbt-venv \
     && /opt/dbt-venv/bin/pip install --no-cache-dir dbt-postgres==1.10.2 \
     && chown -R airflow:0 /opt/dbt-venv
 
+# Ingestion (load_to_bronze.py) bağımlılıklarını da AYRI bir venv'e kur.
+# Neden: pandas + SQLAlchemy kullanılıyor; Airflow 3.0 SQLAlchemy'yi 1.4.x'e
+# sabitler. Bunları Airflow'un ana ortamına kurmak ORM'sini bozabilir.
+# Ayrı venv ile Airflow ve dbt izolasyonu bozulmadan korunur.
+RUN python -m venv /opt/ingestion-venv \
+    && /opt/ingestion-venv/bin/pip install --no-cache-dir \
+        pandas sqlalchemy psycopg2-binary python-dotenv \
+    && chown -R airflow:0 /opt/ingestion-venv
+
 USER airflow
