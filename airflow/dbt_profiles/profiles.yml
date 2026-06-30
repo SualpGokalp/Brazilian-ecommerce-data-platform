@@ -1,0 +1,15 @@
+# dbt'nin Airflow container'ı içinden çalışırken kullanacağı bağlantı profili.
+# Profil adı (ecommerce) dbt_project.yml'deki "profile: ecommerce" ile eşleşmeli.
+ecommerce:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      # ÖNEMLİ: localhost DEĞİL. Container ağında ana PostgreSQL'in adı kullanılır.
+      host: ecommerce_db
+      port: 5432
+      user: dbt_user
+      password: dbt_password
+      dbname: ecommerce
+      schema: public
+      threads: 4

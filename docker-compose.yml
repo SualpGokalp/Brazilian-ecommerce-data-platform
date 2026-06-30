@@ -12,6 +12,14 @@ services:
       - "5432:5432" # Bilgisayarının 5432 portunu container'a bağla
     volumes:
       - postgres_data:/var/lib/postgresql/data # Veriyi kalıcı yap (container silinse bile durur)
+    networks:
+      - ecommerce_network # Airflow container'larının da bağlanacağı paylaşılan ağ
 
 volumes:
   postgres_data: # Yukarıda kullanılan kalıcı depolama alanını tanımla
+
+networks:
+  ecommerce_network:
+    # Sabit bir ağ adı veriyoruz (klasör adına bağlı otomatik isim yerine).
+    # Airflow compose bu ağa "external" olarak bağlanır.
+    name: ecommerce_network

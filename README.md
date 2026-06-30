@@ -41,5 +41,5 @@ docker compose ps
 - [x] `dbt/` — Veri kalitesi testleri (unique / not_null)
 - [ ] `dbt/` — Ek metrikler + doküman
 - [x] `airflow/` — Orkestrasyon iskeleti (docker-compose + ilk DAG)
-- [ ] `airflow/` — dbt pipeline'ını çalıştıran DAG
+- [x] `airflow/` — dbt pipeline DAG'ı (`dbt run` → `dbt test`)
 - [ ] `api/` — FastAPI ile Gold metrik endpoint'leri
