@@ -15,6 +15,8 @@ from raw CSVs to a governed warehouse, an analytics API, and an interactive dash
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+**🇬🇧 English** · [🇹🇷 Türkçe](README.tr.md) &nbsp;|&nbsp; [📊 Live dbt Docs](https://sualpgokalp.github.io/Brazilian-ecommerce-data-platform/)
+
 </div>
 
 ![Dashboard overview](assets/screenshots/dashboard-overview.png)
@@ -61,7 +63,7 @@ flowchart LR
     style E fill:#f5b301,color:#000
 ```
 
-**Orchestrated DAG:** `ingestion` → `dbt run` → `dbt test` → `dbt docs generate`
+**Orchestrated DAG:** `ingestion` → `dbt run` → `dbt snapshot` → `dbt test` → `dbt docs generate`
 
 ## 🧰 Tech Stack
 
@@ -123,7 +125,7 @@ brazilian-ecommerce-data-platform/
 ├── airflow/                    # Orchestration
 │   ├── Dockerfile              # Airflow + isolated dbt / ingestion venvs
 │   ├── docker-compose.yaml     # Airflow stack (joins the shared network)
-│   └── dags/dbt_pipeline.py    # ingestion → run → test → docs
+│   └── dags/dbt_pipeline.py    # ingestion → run → snapshot → test → docs
 ├── api/                        # FastAPI serving the Gold layer
 │   └── main.py
 ├── dashboard/                  # Streamlit + Plotly dashboard
@@ -218,13 +220,13 @@ Example — a live `GET /monthly-orders` response in the Swagger UI:
 - [x] Bronze ingestion (idempotent CSV → PostgreSQL)
 - [x] dbt Silver staging models + sources + data tests
 - [x] dbt Gold dimensional models (`fct_orders`, `dim_customers`, `dim_products`)
-- [x] Airflow end-to-end DAG (ingestion → run → test → docs)
+- [x] Airflow end-to-end DAG (ingestion → run → snapshot → test → docs)
 - [x] FastAPI analytics API (9 endpoints)
 - [x] Streamlit + Plotly dashboard
 - [x] CI (GitHub Actions: ruff lint + dbt validate on a throwaway Postgres)
 - [x] Incremental models & snapshots (SCD2)
 - [x] Containerize the API + dashboard into the compose stack (`docker compose up`)
-- [ ] Publish dbt docs (lineage) to GitHub Pages
+- [x] Publish dbt docs (lineage) to [GitHub Pages](https://sualpgokalp.github.io/Brazilian-ecommerce-data-platform/)
 
 ## 📚 Dataset & License
 
