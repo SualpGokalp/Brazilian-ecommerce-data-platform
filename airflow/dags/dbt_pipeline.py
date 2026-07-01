@@ -57,7 +57,18 @@ with DAG(
     inşa eder. İzole `dbt-venv` kullanır.
     """
 
-    # 3) dbt testlerini çalıştır (veri kalitesi).
+    # 3) SCD2 snapshot'larını al (silver view'ları oluştuktan sonra çalışır).
+    dbt_snapshot = BashOperator(
+        task_id="dbt_snapshot",
+        bash_command=f"cd {DBT_PROJECT_DIR} && {DBT} snapshot",
+    )
+    dbt_snapshot.doc_md = """
+    ### dbt snapshot
+    Müşteri/ürün boyutlarının zaman içindeki değişimini **SCD Type 2** olarak
+    saklar (`snapshots` şeması, `dbt_valid_from` / `dbt_valid_to` alanları).
+    """
+
+    # 4) dbt testlerini çalıştır (veri kalitesi).
     dbt_test = BashOperator(
         task_id="dbt_test",
         bash_command=f"cd {DBT_PROJECT_DIR} && {DBT} test",
@@ -79,5 +90,5 @@ with DAG(
     (`target/` altında) üretir.
     """
 
-    # Görev zinciri: önce yükleme, sonra dönüşüm, test ve dokümantasyon.
-    ingestion >> dbt_run >> dbt_test >> dbt_docs
+    # Görev zinciri: yükleme -> dönüşüm -> snapshot -> test -> dokümantasyon.
+    ingestion >> dbt_run >> dbt_snapshot >> dbt_test >> dbt_docs

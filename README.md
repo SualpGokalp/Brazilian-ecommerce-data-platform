@@ -116,9 +116,10 @@ brazilian-ecommerce-data-platform/
 │   ├── download_data.py        # Pull dataset from Kaggle
 │   └── load_to_bronze.py       # Idempotent load into bronze.*
 ├── dbt/ecommerce/              # dbt project
-│   └── models/
-│       ├── silver/             # stg_* staging views + sources + tests
-│       └── gold/               # fct_orders, dim_customers, dim_products
+│   ├── models/
+│   │   ├── silver/             # stg_* staging views + sources + tests
+│   │   └── gold/               # fct_orders (incremental), dim_customers, dim_products
+│   └── snapshots/              # SCD2 history (scd_customers, scd_products)
 ├── airflow/                    # Orchestration
 │   ├── Dockerfile              # Airflow + isolated dbt / ingestion venvs
 │   ├── docker-compose.yaml     # Airflow stack (joins the shared network)
@@ -137,7 +138,15 @@ brazilian-ecommerce-data-platform/
 |-------|--------|----------|
 | **Bronze** | `bronze` | Raw CSVs loaded 1:1 (orders, order_items, customers, products, payments, category translation) |
 | **Silver** | `silver` | `stg_*` cleaned & typed staging **views** built from declared `source()`s, with `unique` / `not_null` tests on keys |
-| **Gold** | `gold` | Dimensional **tables**: `fct_orders` (order-grain fact), `dim_customers`, `dim_products` (with English category names) |
+| **Gold** | `gold` | Dimensional **tables**: `fct_orders` (order-grain fact, **incremental**), `dim_customers`, `dim_products` (with English category names) |
+| **Snapshots** | `snapshots` | **SCD Type 2** history of customers & products (`scd_customers`, `scd_products`) with `dbt_valid_from` / `dbt_valid_to` |
+
+**Advanced dbt patterns used**
+
+- **Incremental model** — `fct_orders` only processes orders newer than the latest
+  already loaded (`is_incremental()` + `delete+insert`), instead of a full rebuild.
+- **SCD Type 2 snapshots** — `scd_customers` / `scd_products` capture historical changes
+  via dbt's `check` strategy, so past states are never lost.
 
 ## 🚀 Quick Start
 
@@ -213,7 +222,7 @@ Example — a live `GET /monthly-orders` response in the Swagger UI:
 - [x] FastAPI analytics API (9 endpoints)
 - [x] Streamlit + Plotly dashboard
 - [x] CI (GitHub Actions: ruff lint + dbt validate on a throwaway Postgres)
-- [ ] Incremental models & snapshots (SCD2)
+- [x] Incremental models & snapshots (SCD2)
 - [x] Containerize the API + dashboard into the compose stack (`docker compose up`)
 - [ ] Publish dbt docs (lineage) to GitHub Pages
 
